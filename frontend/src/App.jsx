@@ -6,34 +6,32 @@ import Stages from "./components/stages";
 import Summary from "./components/summary";
 
 export default function App() {
-  const [producttype, setproducttype] = useState("inhouse");
-  const [rate, setRate] = useState(0);
+  const [productType, setProductType] = useState("inhouse");
+  const [rate, setRate] = useState(0); 
   const [inProduct, setInProduct] = useState("");
   const [outProduct, setOutProduct] = useState("");
   const [qty, setQty] = useState(0);
-  const [cost, setcost] = useState(0);
+  const [cost, setCost] = useState(0); 
   const [stages, setStages] = useState([{ wastage: 0, lost: 0, reject: 0 }]);
 
-  // --- Calculation Logic ---
-  const jobWorkCost = producttype === "jobwork" ? Number(rate) * Number(qty) : 0;
+  const jobWorkCost = productType == "jobwork" ? rate * qty : 10;
 
-  let finalQty = qty;
-  stages.forEach((s) => {
-    const factor =
-      (1 - s.wastage / 100) * (1 - s.lost / 100) * (1 - s.reject / 100);
-    finalQty *= factor;
-  });
+  const finalQty = stages.reduce((start, stage) => {
+    const rem_qty =
+      (1 - stage.wastage / 100) * (1 - stage.lost / 100) * (1 - stage.reject / 100);
+    return start * rem_qty;
+  }, qty);
 
-  const totalCost = Number(cost) + jobWorkCost;
-  const costPerUnit = finalQty > 0 ? totalCost / finalQty : 0;
+  const totalCost = Number(cost) + jobWorkCost; 
+  const costPerUnit = finalQty > 0 ? Math.round(totalCost / finalQty) : 0;
 
   return (
     <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <h2>BOM & Production Cost Dashboard</h2>
+      <h2>BOM Dashboard</h2>
 
       <ProductionType
-        producttype={producttype}
-        setproducttype={setproducttype}
+        producttype={productType}
+        setproducttype={setProductType}
         rate={rate}
         setRate={setRate}
       />
@@ -47,15 +45,11 @@ export default function App() {
         setQty={setQty}
       />
 
-      <Cost cost={cost} setcost={setcost} />
+      <Cost cost={cost} setcost={setCost} />
 
       <Stages stages={stages} setStages={setStages} />
 
-      <Summary
-        totalCost={totalCost}
-        finalQty={finalQty}
-        costPerUnit={costPerUnit}
-      />
+      <Summary totalCost={totalCost} finalQty={finalQty} costPerUnit={costPerUnit} />
     </div>
   );
 }

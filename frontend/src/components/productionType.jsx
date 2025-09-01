@@ -4,19 +4,19 @@ export default function ProductionType({ producttype, setproducttype, rate, setR
       <label>
         <input
           type="radio"
-          checked={producttype === "inhouse"}
+          checked={producttype == "inhouse"}
           onChange={() => setproducttype("inhouse")}
         /> Inhouse
       </label>
       <label>
         <input
           type="radio"
-          checked={producttype === "jobwork"}
+          checked={producttype == "jobwork"}
           onChange={() => setproducttype("jobwork")}
         /> Jobwork
       </label>
 
-      {producttype === "jobwork" && (
+      {producttype == "jobwork" && (
         <div>
           Job rate/unit:{" "}
           <input
